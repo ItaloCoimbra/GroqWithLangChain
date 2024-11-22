@@ -48,33 +48,14 @@ def setup_qa_chain():
             temperature=0.7,
             model="mixtral-8x7b-32768"
         )
-        template = """
-        {{
-            "result": [
-                "Analise as respostas à minha pergunta em até 150 palavras.",
-                "Estruture a análise nas seguintes seções, e **garanta que o HTML gerado esteja perfeito**:",
-                "  <h2 class=\\"analise-titulo\\">Aspectos Positivos</h2>",
-                "  <p class=\\"analise-texto\\">Descreva os aspectos positivos ou pontos fortes destacados nas respostas.</p>",
-                "  <h2 class=\\"analise-titulo\\">Oportunidades de Melhoria</h2>",
-                "  <p class=\\"analise-texto\\">Identifique áreas para melhoria ou feedback construtivo com base nas respostas.</p>",
-                "  <h2 class=\\"analise-titulo\\">Impressões Gerais</h2>",
-                "  <p class=\\"analise-texto\\">Forneça suas impressões gerais e um resumo das respostas.</p>",
-                "Forneça **somente** as seções solicitadas, sem qualquer introdução, explicação adicional ou formatação fora do HTML. Não adicione nenhuma explicação como 'Aqui está a análise em formato HTML'."
-            ],
-            "prompt": {{
-                "content": "{{context}}",
-                "instructions": [
-                    "Forneça **somente** as seções solicitadas, sem qualquer introdução ou explicação adicional, como 'Here is the analysis in HTML format'.",
-                    "A análise deve ser estruturada nas seções solicitadas, utilizando apenas HTML e sem texto fora das tags HTML.",
-                    "O **único formato aceito** para a análise é HTML. Não deve haver texto fora das tags HTML fornecidas.",
-                    "Cada seção deve ter um título dentro da tag <h2> com a classe 'analise-titulo' e o conteúdo dentro da tag <p> com a classe 'analise-texto'.",
-                    "Todas as tags HTML devem ser fechadas corretamente e sem erros de sintaxe.",
-                    "A análise deve ser **precisa e fiel** ao formato solicitado, sem incluir qualquer formatação extra, explicações adicionais ou texto de introdução.",
-                    "O HTML gerado deve ser **limpo**, **bem estruturado** e **sem falhas**, com o uso correto das tags <h2> e <p> conforme solicitado."
-                ]
-            }}
-        }}
-        """
+        template = """Você é um assistente amigável que responde perguntas baseado no contexto fornecido.
+        Mantenha um tom conversacional e natural. SEMPRE DIGITE EM PORTUGUES, SEMPRE EM PORTUGUES, INDEPENDENTE.
+        
+        Contexto relevante do documento: {context}
+        
+        Humano: {question}
+        
+        Assistente:"""
         prompt = ChatPromptTemplate.from_template(template)
         return prompt | chat | StrOutputParser()
     except Exception as e:
